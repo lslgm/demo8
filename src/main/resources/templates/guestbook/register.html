@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/basic}">
+<!--layout:decorate=사용할 레이아웃 지정-->
+<!--본문에 적용할 조각을 작성-->
+<!--basic.html 레이아웃에 content에 들어갈 조각-->
+<div layout:fragment="content">
+    <div class="container-fluid"> <!--본문내용-->
+        <!--카드양식에 Form 추가-->
+        <div class="row">
+            <div class="col mt-3">
+                <div class="card"><!--카드 형식-->
+                    <div class="card-header">게시글 등록</div>
+                    <div class="card-body">
+                        <!--Form양식을 이용해서 입력폼,상세보기/수정하기-->
+                        <!--name은 차후 DTO 설계 후 지정하므로 임시로 지정-->
+                        <!--action method, 변수명 지정-->
+                        <form th:action="@{/guestbook/register}" th:method="post">
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" name="title">
+                            </div>
+                            <div class="mb-3">
+                                <label for="content">내용</label>
+                                <textarea class="form-control" rows="10" id="content" name="content"></textarea>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">작성자</label>
+                                <input type="text" class="form-control" name="writer">
+                            </div>
+                            <button type="submit" class="btn btn-primary">등록</button>
+                        </form>
+                    </div>
+                </div>
+            </div><!--col-->
+        </div><!--row-->
+    </div><!--본문내용-->
+</div>
+</html>
+<!--controller에서 매핑으로 레이아웃 결과 확인-->

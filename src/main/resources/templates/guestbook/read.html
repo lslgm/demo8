@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/basic}">
+<!--layout:decorate=사용할 레이아웃 지정-->
+<!--본문에 적용할 조각을 작성-->
+<!--basic.html 레이아웃에 content에 들어갈 조각-->
+<div layout:fragment="content">
+    <div class="container-fluid"> <!--본문내용-->
+        <!--카드양식에 Form 추가-->
+        <div class="row">
+            <div class="col mt-3">
+                <div class="card"><!--카드 형식-->
+                    <div class="card-header">상세보기</div>
+                    <div class="card-body">
+                        <!--Form양식을 이용해서 입력폼,상세보기/수정하기-->
+                        <!--name은 차후 DTO 설계 후 지정하므로 임시로 지정-->
+                        <!-input추가 상세보기 수정하기-->
+                        <form action="#">
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">번호</label>
+                                <input type="text" class="form-control" name="gno" th:value="${dto.gno}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" name="title" th:value="${dto.title}" readonly>
+                            </div>
+                            <div class="mb-3">
+                                <label for="content">내용</label>
+                                <textarea class="form-control" rows="10" id="content" name="content" th:text="${dto.content}" readonly></textarea>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">작성자</label>
+                                <input type="text" class="form-control" name="writer" th:value="${dto.writer}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">등록일자</label>
+                                <input type="text" class="form-control" name="regDate"
+                                       th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">수정일자</label>
+                                <input type="text" class="form-control" name="modDate"
+                                       th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+                            </div>
+
+                            <a th:href="@{/guestbook/modify(gno=${dto.gno},page=${requestDTO.page},
+                            type=${requestDTO.type},keyword=${requestDTO.keyword})}">
+                                <button type="button" class="btn btn-primary">수정</button>
+                            </a>
+
+                            <a th:href="@{/guestbook/list(page=${requestDTO.page},
+                            type=${requestDTO.type},keyword=${requestDTO.keyword})}">
+                                <button type="button" class="btn btn-info" >목록으로</button>
+                            </a>
+
+
+                        </form>
+                    </div>
+                </div>
+            </div><!--col-->
+        </div><!--row-->
+    </div><!--본문내용-->
+</div>
+</html>
+<!--controller에서 매핑으로 레이아웃 결과 확인-->

@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/basic}">
+<!--layout:decorate=사용할 레이아웃 지정-->
+<!--본문에 적용할 조각을 작성-->
+<!--basic.html 레이아웃에 content에 들어갈 조각-->
+<div layout:fragment="content">
+    <div class="container-fluid">
+        <!--원본파일에서 본문내용 부분만 디자인해서-->
+        <!--조각파일에 복사해서 작업진행-->
+        <!--가입버튼-->
+        <h1 class="mt-4">방문록 목록</h1>
+        <span>
+            <a th:href="@{/guestbook/register}"> <!--등록페이지로-->
+                <button type="button" class="btn btn-secondary">등록하기</button>
+            </a>
+        </span>
+        <!--검색 기능-->
+        <form th:action="@{/guestbook/list}" method="get" id="searchForm"><!--controller에서 guestbook.list연결-->
+            <div class="input-group">
+                <!--페이지 번호-->
+                <input type="hidden" name="page" value="1"> <!--페이지 번호-->
+                <!--분류(제목,내용,작성자, 제목+내용, 제목+내용+작성자)-->
+
+
+                    <select class="form-select form-select-sm" name="type"> <!--분류값-->
+                        <option th:selected="${pageRequestDTO.type==null}">------</option> <!--분류가 없으면 선택-->
+                        <option value="t" th:selected="${pageRequestDTO.type=='t'}">제목</option>
+                        <option value="c" th:selected="${pageRequestDTO.type=='c'}">내용</option>
+                        <option value="w" th:selected="${pageRequestDTO.type=='w'}">작성자</option>
+                        <option value="tc" th:selected="${pageRequestDTO.type=='tc'}">제목+내용</option>
+                        <option value="tcw" th:selected="${pageRequestDTO.type=='tcw'}">제목+내용+작성자</option>
+                    </select>
+
+
+                <!--검색어-->
+
+
+                    <input class="form-control" name="keyword" th:value="${pageRequestDTO.keyword}">
+
+
+                <!--버튼-->
+                <div>
+                    <button type="submit" class="btn btn-dark">검색</button>
+                    <button type="reset" class="btn btn-dark">지우기</button>
+                </div>
+            </div>
+        </form>
+        <!--표를 이용한 목록-->
+        <div class="container mt-3">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>등록날짜</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="dto:${result.dtoList}"
+                    th:onclick="|location.href='@{/guestbook/read(gno=${dto.gno},page=${result.page},type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}'|">
+                    <td th:text="${dto.gno}">1</td>
+                    <td th:text="${dto.title}">연습</td>
+                    <td th:text="${dto.writer}">작성자2</td>
+                    <td th:text="${#temporals.format(dto.regDate, 'yyyy/MM/dd')}">2023/09/12</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!--페이지 처리 한페이지 당 10개씩-->
+        <ul class="pagination justify-content-center"> <!--각 항목별로 연결 작성, 해당페이지는 활성화-->
+            <!--이전 페이지가 있으면 나타낸다.-->
+            <li class="page-item" th:if="${result.prev}">
+                <a class="page-link" th:href="@{/guestbook/list(page=${result.start-1},
+            type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"> 이전 </a>
+            </li>
+
+            <!--페이지 수 만큼 반복-->
+            <!-- 현재페이지와 페이지번호가 같으면 활성화-->
+            <li th:class="'page-item' + ${result.page==page?'active':''}" th:each="page:${result.pageList}"> <!--해당페이지 활성화-->
+                <a class="page-link" th:href="@{/guestbook/list(page=${page},
+            type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}" th:text="${page}"></a> <!--클릭시 해당페이지로 이동-->
+            </li>
+
+            <!--이후 페이지가 있으면 나타낸다.-->
+            <li class="page-item" th:if="${result.next}">
+                <a class="page-link" th:href="@{/guestbook/list(page=${result.end+1},
+            type=${pageRequestDTO.type}, keyword=${pageRequestDTO.keyword})}"> 다음 </a>
+            </li>
+
+        </ul>
+    </div>
+</div>
+</html>
+<!--controller에서 매핑으로 레이아웃 결과 확인-->

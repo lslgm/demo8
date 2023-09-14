@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+layout:decorate="~{layout/basic}">
+<!--layout:decorate=사용할 레이아웃 지정-->
+<!--본문에 적용할 조각을 작성-->
+<!--basic.html 레이아웃에 content에 들어갈 조각-->
+<div layout:fragment="content">
+    <div class="container-fluid"> <!--본문내용-->
+        <!--카드양식에 Form 추가-->
+        <div class="row">
+            <div class="col mt-3">
+                <div class="card"><!--카드 형식-->
+                    <div class="card-header">게시글 수정</div>
+                    <div class="card-body">
+                        <!--Form양식을 이용해서 입력폼,상세보기/수정하기-->
+                        <!--name은 차후 DTO 설계 후 지정하므로 임시로 지정-->
+                        <!-input추가 상세보기 수정하기-->
+                        <!--수정폼은 입력폼과 동일 단 번호(키값)이 필요-->
+                        <form th:action="@{/guestbook/modify}" th:method="post" id="form1">
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">번호</label>
+                                <input type="text" class="form-control" name="gno" th:value="${dto.gno}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">제목</label>
+                                <input type="text" class="form-control" name="title" th:value="${dto.title}"  >
+                            </div>
+                            <div class="mb-3">
+                                <label for="content">내용</label>
+                                <textarea class="form-control" rows="10" id="content" name="content" th:text="${dto.content}"></textarea>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">작성자</label>
+                                <input type="text" class="form-control" name="writer" th:value="${dto.writer}" >
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">등록일자</label>
+                                <input type="text" class="form-control"
+                                       th:value="${#temporals.format(dto.regDate, 'yyyy/MM/dd HH:mm:ss')}" readonly>
+                            </div>
+                            <div class="mb-3 mt-3">
+                                <label class="form-label">수정일자</label>
+                                <input type="text" class="form-control"
+                                       th:value="${#temporals.format(dto.modDate, 'yyyy/MM/dd HH:mm:ss')}" >
+                            </div>
+                            <button type="submit">d이동</button>
+                            <button type="submit" class="btn btn-primary" onclick="modifyBtn()">수정</button>
+                            <button type="button" class="btn btn-info">목록으로</button>
+                            <button type="button" class="btn btn-danger" onclick="removeBtn()">삭제</button>
+                        </form>
+                    </div>
+                </div>
+            </div><!--col-->
+        </div><!--row-->
+        <!--document 자바스크립트, .id나 #클래스를 이용해서 ajak-->
+        <script type="text/javascript"> <!--본문안에 있어야 인식이 잘됨-->
+            const actionForm =document.getElementById("form1") // 페이지에서 form1이름의 id를 찾는다
+            function removeBtn(){ //삭제 작업용 메소드....function선언되 메소드를 이용할때는 onclick 사용
+                actionForm.method = "post";
+                actionForm.action = "/guestbook/remove";
+                actionForm.submit();
+            }
+
+            function modifyBtn(){
+                if(!confirm("수정하시겠습니가?")){
+                    return;
+                }
+                actionForm.method="post";
+                actionForm.action="/guestbook/modify"
+                actionForm.submit();
+            }
+
+            function listBtn(){
+                actionForm.method="get";
+                actionForm.action="/guestbook/list"
+                actionForm.submit();
+            }
+        </script>
+    </div><!--본문내용-->
+</div>
+</html>
+<!--controller에서 매핑으로 레이아웃 결과 확인-->
